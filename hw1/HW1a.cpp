@@ -126,6 +126,7 @@ HW1a::paintGL()
 	glViewport(0, 0, m_winW/3, m_winH/3);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glBegin(GL_POINTS);
+
 	for (size_t i = 0; i < 31; i++) {
 		glVertex2f(Vertices[i], Vertices[i + 1]);
 		i++;
