@@ -85,9 +85,12 @@ void
 HW1a::resizeGL(int w, int h)
 {
 	// PUT YOUR CODE HERE
-	m_winW = w;
+
+	//These two lines under are important
+	m_winW = w;  
 	m_winH = h;
 
+	///////////////////// Everything under here comes from the slides 
 	// compute aspect ratio
 	float ar = (float)w / h;
 	// set xmax, ymax
@@ -122,104 +125,25 @@ HW1a::paintGL()
 	//std::cout << "Hey";
 	//std::cout << Vertices[1];
 
-	///Bottom left draws with points
-	glViewport(0, 0, m_winW/3, m_winH/3);
+
 	glClear(GL_COLOR_BUFFER_BIT);
-	glBegin(GL_POINTS);
+	int w = m_winW/3;
+	int h = m_winH/3;
 
-	for (size_t i = 0; i < 31; i++) {
-		glVertex2f(Vertices[i], Vertices[i + 1]);
-		i++;
+	for (int i = 0; i < 9; i++) {
+		glViewport((i % 3) * w, (i / 3) * h, w, h);
+		glBegin(DrawModes[i]);
+		for (size_t j = 0; j < 31; j++) {
+			glVertex2f(Vertices[j], Vertices[j + 1]);
+			j++;
+		}
+		glEnd();
+		glFlush();
+
 	}
-	glEnd();
+	
 
-
-	///Bottom middle draws with lines
-	glViewport(m_winW/3, 0, m_winW / 3, m_winH / 3);
-	glBegin(GL_LINES);
-	for (size_t i = 0; i < 31; i++) {
-
-		glVertex2f(Vertices[i], Vertices[i + 1]);
-		i++;
-	}
-	glEnd();
-
-
-	///Bottom right draws with line strip
-	glViewport(2 * m_winW / 3, 0, m_winW / 3, m_winH / 3);
-	glBegin(GL_LINE_STRIP);
-	for (size_t i = 0; i < 31; i++) {
-
-		glVertex2f(Vertices[i], Vertices[i + 1]);
-		i++;
-	}
-	glEnd();
-
-
-
-	///middle left draws with line loop
-	glViewport(0, m_winH / 3, m_winW / 3, m_winH / 3);
-	glBegin(GL_LINE_LOOP);
-	for (size_t i = 0; i < 31; i++) {
-
-		glVertex2f(Vertices[i], Vertices[i + 1]);
-		i++;
-	}
-	glEnd();
-
-	///middle draws with triangles
-	glViewport(m_winW / 3, m_winH / 3, m_winW / 3, m_winH / 3);
-	glBegin(GL_TRIANGLES);
-	for (size_t i = 0; i < 31; i++) {
-
-		glVertex2f(Vertices[i], Vertices[i + 1]);
-		i++;
-	}
-	glEnd();
-
-	///middle right draws with triangle_strip
-	glViewport(2 * m_winW / 3, m_winH / 3, m_winW / 3, m_winH / 3);
-	glBegin(GL_TRIANGLE_STRIP);
-	for (size_t i = 0; i < 31; i++) {
-
-		glVertex2f(Vertices[i], Vertices[i + 1]);
-		i++;
-	}
-	glEnd();
-
-	///top left draws with triangle_fan
-	glViewport(0, 2 * m_winH / 3, m_winW / 3, m_winH / 3);
-	glBegin(GL_TRIANGLE_FAN);
-	for (size_t i = 0; i < 31; i++) {
-
-		glVertex2f(Vertices[i], Vertices[i + 1]);
-		i++;
-	}
-	glEnd();
-
-	///top middle draws with quads
-	glViewport(m_winW / 3, 2 * m_winH / 3, m_winW / 3, m_winH / 3);
-	glBegin(GL_QUADS);
-	for (size_t i = 0; i < 31; i++) {
-
-		glVertex2f(Vertices[i], Vertices[i + 1]);
-		i++;
-	}
-	glEnd();
-
-	///top right draws with polygon
-	glViewport(2 * m_winW / 3, 2 * m_winH / 3, m_winW/3, m_winH / 3);
-	glBegin(GL_POLYGON);
-	for (size_t i = 0; i < 31; i++) {
-
-		glVertex2f(Vertices[i], Vertices[i + 1]);
-		i++;
-	}
-	glEnd();
-
-
-
-	glFlush();
+	
 	
 	// PUT YOUR CODE HERE
 }
