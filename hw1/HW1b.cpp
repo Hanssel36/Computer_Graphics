@@ -56,6 +56,9 @@ void
 HW1b::resizeGL(int w, int h)
 {
 	// PUT YOUR CODE HERE
+
+
+
 	m_winW = w;
 	m_winH = h;
 
@@ -91,6 +94,7 @@ void
 HW1b::paintGL()
 {
 	// PUT YOUR CODE HERE
+
 	// clear canvas with background values
 	glClear(GL_COLOR_BUFFER_BIT);
 	// draw all points in m_points
@@ -239,8 +243,19 @@ HW1b::initBuffers()
 //
 void
 HW1b::divideTriangle(vec2 a, vec2 b, vec2 c, int count)
+//  PUT YOUR CODE HERE
 {
-	// PUT YOUR CODE HERE
+	if (count > 0) {
+		vec2 ab = vec2((a[0] + b[0]) / 2.0, (a[1] + b[1]) / 2.0);
+		vec2 ac = vec2((a[0] + c[0]) / 2.0, (a[1] + c[1]) / 2.0);
+		vec2 bc = vec2((b[0] + c[0]) / 2.0, (b[1] + c[1]) / 2.0);
+		divideTriangle(a, ab, ac, count - 1);
+		divideTriangle(b, bc, ab, count - 1);
+		divideTriangle(c, ac, bc, count - 1);
+		divideTriangle(ab, ac, bc, count - 1);
+	}
+	else triangle(a, b, c);
+
 }
 
 
