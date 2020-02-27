@@ -58,9 +58,10 @@ HW1b::resizeGL(int w, int h)
 	// PUT YOUR CODE HERE
 
 
-
+	//These two lines initialize width and height of window
 	m_winW = w;
 	m_winH = h;
+
 
 	// compute aspect ratio
 	float ar = (float)w / h;
@@ -75,7 +76,7 @@ HW1b::resizeGL(int w, int h)
 		ymax = 1 / ar;
 	}
 
-	// set viewport
+	// set the initial viewport to the whole screen
 	glViewport(0, 0, w, h);
 	// init viewing coordinates for orthographic projection
 	glMatrixMode(GL_PROJECTION);
@@ -97,6 +98,8 @@ HW1b::paintGL()
 
 	// clear canvas with background values
 	glClear(GL_COLOR_BUFFER_BIT);
+
+
 	// draw all points in m_points
 	for (uint i = 0, j = 0; i < m_colors.size(); ++i) {
 		// set color
@@ -243,17 +246,29 @@ HW1b::initBuffers()
 //
 void
 HW1b::divideTriangle(vec2 a, vec2 b, vec2 c, int count)
-//  PUT YOUR CODE HERE
+
 {
+	//  PUT YOUR CODE HERE
+	//divide triangles calculates the midpoint of each side of the triangle
+	//and delcares those new vertices of the subdivision of the triangle
+	// this function is called recursively until the number of subdivisions
+	// is completed
+
 	if (count > 0) {
+
+		//calculates the midpoints
 		vec2 ab = vec2((a[0] + b[0]) / 2.0, (a[1] + b[1]) / 2.0);
 		vec2 ac = vec2((a[0] + c[0]) / 2.0, (a[1] + c[1]) / 2.0);
 		vec2 bc = vec2((b[0] + c[0]) / 2.0, (b[1] + c[1]) / 2.0);
+
+		//divides triangles using new vertices
 		divideTriangle(a, ab, ac, count - 1);
 		divideTriangle(b, bc, ab, count - 1);
 		divideTriangle(c, ac, bc, count - 1);
 		divideTriangle(ab, ac, bc, count - 1);
 	}
+
+	//if count hits 0, draws the triangle
 	else triangle(a, b, c);
 
 }
