@@ -74,9 +74,30 @@ void
 HW2b::resizeGL(int w, int h)
 {
 	// PUT YOUR CODE HERE
+	//save window dimensions 
+	m_winW = w;
+	m_winH = h;
+
+	//compute aspect ratio
+	float ar = (float)w / h;
+
+	//set xmax, ymax
+	float xmax, ymax;
+	if (ar > 1.0) {
+		xmax = ar;
+		ymax = 1.;
+	}
+	else {
+		xmax = 1.;
+		ymax = 1 / ar;
+	}
+	//set viewport to occupy full canvas
+	glViewport(0, 0, w, h);
+
+	//initialize viewing coordinates for orthographic projection
+	m_projection.setToIdentity();
+	m_projection.ortho(-xmax, xmax, -ymax, ymax, -1.0, 1.0);
 }
-
-
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // HW2b::paintGL:
@@ -87,6 +108,22 @@ void
 HW2b::paintGL()
 {
 	// PUT YOUR CODE HERE
+	//clear canvas
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	// use glsl program
+	glUseProgram(m_program[HW2B].programId());
+
+	//pass parameters to vertex shaqder
+	glUniformMatrix4fv(m_uniform[HW2B][MV], 1, GL_FALSE, m_modelview.constData());
+	glUniformMatrix4fv(m_uniform[HW2B][PROJ], 1, GL_FALSE, m_projection.constData());
+	glUniform1f(m_uniform[HW2B][THETA], m_theta);
+	glUniform1i(m_uniform[HW2B][TWIST], m_twist);
+
+	//draw triangles
+	glDrawArrays(GL_TRIANGLES, 0, (GLsizei) m_numPoints);
+
+
 }
 
 
@@ -265,6 +302,18 @@ HW2b::initVertexBuffer()
 void
 HW2b::divideTriangle(vec2 a, vec2 b, vec2 c, int count)
 {
+	if (count > 0) {
+		vec2 bc = vec2((b.x() + c.x()) / 2.0f, (b.y() + c.y()) / 2.0f);
+		vec2 ab = vec2((a.x() + b.x()) / 2.0f, (a.y() + b.y()) / 2.0f);
+		vec2 ac = vec2((a.x() + c.x()) / 2.0f, (a.y() + c.y()) / 2.0f);
+		divideTriangle(a, ab, ac, count - 1);
+		divideTriangle(b, bc, ab, count - 1);
+		divideTriangle(c, ac, bc, count - 1);
+		divideTriangle(ab, ac, bc, count - 1);
+
+
+	}
+	else triangle(a, b, c);
 	// PUT YOUR CODE HERE
 }
 
