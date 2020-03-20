@@ -139,13 +139,10 @@ HW2a::paintGL()
 	glUniformMatrix4fv(m_uniform[HW2A][PROJ], 1, GL_FALSE, m_projection.constData());
 	for (int i = 0; i < 9; ++i) {
 		//set viewport
-		glViewport((i % 3) * w, (1 / 3) * h, w, h);
+		glViewport((i % 3) * w, (i / 3) * h, w, h);
 
 		glDrawArrays(DrawModes[i], 0, m_vertNum);
 	}
-	glViewport(0, 0, w/ 3, h/ 3);
-	glDrawArrays(GL_POINTS, 0, m_vertNum);
-
 
 	// disable vertex shader point size adjustment
 	glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
