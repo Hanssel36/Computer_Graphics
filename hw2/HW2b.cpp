@@ -9,6 +9,7 @@
 
 #include "HW2b.h"
 
+
 // shader ID
 enum {HW2B};
 
@@ -85,14 +86,14 @@ HW2b::resizeGL(int w, int h)
 	float xmax, ymax;
 	if (ar > 1.0) {
 		xmax = ar;
-		ymax = 1.;
+		ymax = 1.0;
 	}
 	else {
-		xmax = 1.;
+		xmax = 1.0;
 		ymax = 1 / ar;
 	}
 	//set viewport to occupy full canvas
-	glViewport(0, 0, w, h);
+	glViewport(0, 0, w/3, h/3);
 
 	//initialize viewing coordinates for orthographic projection
 	m_projection.setToIdentity();
@@ -111,8 +112,15 @@ HW2b::paintGL()
 	//clear canvas
 	glClear(GL_COLOR_BUFFER_BIT);
 
+
+	///////
+
+	
+
 	// use glsl program
+
 	glUseProgram(m_program[HW2B].programId());
+
 
 	//pass parameters to vertex shaqder
 	glUniformMatrix4fv(m_uniform[HW2B][MV], 1, GL_FALSE, m_modelview.constData());
@@ -283,6 +291,8 @@ HW2b::initVertexBuffer()
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, m_numPoints*sizeof(vec2), &m_points[0], GL_STATIC_DRAW);
 
+
+	
 	// bind color buffer to the GPU and copy the colors from CPU to GPU
 	glBindBuffer(GL_ARRAY_BUFFER, m_colorBuffer);
 	glBufferData(GL_ARRAY_BUFFER, m_numPoints*sizeof(vec3), &m_colors[0], GL_STATIC_DRAW);
@@ -301,7 +311,7 @@ HW2b::initVertexBuffer()
 //
 void
 HW2b::divideTriangle(vec2 a, vec2 b, vec2 c, int count)
-{
+{// PUT YOUR CODE HERE
 	if (count > 0) {
 		vec2 bc = vec2((b.x() + c.x()) / 2.0f, (b.y() + c.y()) / 2.0f);
 		vec2 ab = vec2((a.x() + b.x()) / 2.0f, (a.y() + b.y()) / 2.0f);
@@ -314,7 +324,7 @@ HW2b::divideTriangle(vec2 a, vec2 b, vec2 c, int count)
 
 	}
 	else triangle(a, b, c);
-	// PUT YOUR CODE HERE
+	
 }
 
 

@@ -12,17 +12,15 @@ uniform	int	u_Twist;	// Twist flag
 
 void main() 
 {
+	
 	// PUT YOUR CODE HERE
 	if(u_Twist == 0) {
-			gl_Position = u_Projection * u_Modelview * vec4(a_Position , 0, 1);
-
-	}else {
+			gl_Position = u_Projection * u_Modelview * vec4(a_Position,0,1);
+	} else{
 			float x = a_Position.x;
 			float y = a_Position.y;
-			float t = sqrt(x*x + y*y ) * u_Theta;
-			gl_Position = u_Projection * vec4(x*cos(t) - y*sin(t), x*sin(t) + y*cos(t), 0, 1);
-	
+			float t = sqrt(x*x + y*y) * u_Theta;
+			gl_Position = u_Projection * vec4(x*cos(t)- y*sin(t), x*sin(t)+y*cos(t),0,1);
 	}
-	v_Color = vec4(a_Color, 1);
-
+	v_Color = vec4(a_Color,1);
 }
