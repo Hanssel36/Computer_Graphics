@@ -117,7 +117,7 @@ HW2b::paintGL()
 	glUseProgram(m_program[HW2B].programId());
 
 	// pass the following parameters to vertex the shader:
-	// projection matrix, modelview matrix, and "reverse" flag
+	// projection matrix, modelview matrix, twist,theta
 	glUniformMatrix4fv(m_uniform[HW2B][MV], 1, GL_FALSE, m_modelview.constData());
 	glUniformMatrix4fv(m_uniform[HW2B][PROJ], 1, GL_FALSE, m_projection.constData());
 
@@ -349,6 +349,7 @@ HW2b::divideTriangle(vec2 a, vec2 b, vec2 c, int count)
 
 	}
 	else triangle(a, b, c);
+
 	
 }
 
@@ -368,9 +369,6 @@ HW2b::triangle(vec2 v1, vec2 v2, vec2 v3)
 	m_points.push_back(v3);
 
 	// init color
-	//float r = (float) rand() / RAND_MAX;
-	//float g = (float) rand() / RAND_MAX;
-	//float b = (float) rand() / RAND_MAX;
 	m_colors.push_back(vec3((float)rand() / RAND_MAX, (float)rand() / RAND_MAX, (float)rand() / RAND_MAX));
 	m_colors.push_back(vec3((float)rand() / RAND_MAX, (float)rand() / RAND_MAX, (float)rand() / RAND_MAX));
 	m_colors.push_back(vec3((float)rand() / RAND_MAX, (float)rand() / RAND_MAX, (float)rand() / RAND_MAX));
@@ -396,14 +394,21 @@ HW2b::changeTheta(int angle)
 	m_spinBoxTheta->blockSignals(false);
 
 	// init vars
-	m_theta = angle * (M_PI / 180.);	// convert angle to radians
+	m_theta = angle * (M_PI / 180.0);	// convert angle to radians
+	
+	if (m_checkBoxTwist->isChecked()) {
+		glUniform1i(m_uniform[HW2B][TWIST], m_twist);
+		glUniform1f(m_uniform[HW2B][THETA], m_theta);
+		updateGL();
+	}
+	else {
+		// update model's rotation matrix
+		m_modelview.setToIdentity();
+		m_modelview.rotate(angle, QVector3D(0.0f, 0.0f, 1.0f));
 
-	// update model's rotation matrix
-	m_modelview.setToIdentity();
-	m_modelview.rotate(angle, QVector3D(0.0f, 0.0f, 1.0f));
-
-	// draw
-	updateGL();
+		// draw
+		updateGL();
+	}
 }
 
 

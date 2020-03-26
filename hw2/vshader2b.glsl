@@ -12,26 +12,22 @@ uniform	float	u_Theta;	// Theta parameter
 uniform	int	u_Twist;	// Twist flag
 
 
-vec2 rotTwist(vec2 a_Position)
-{
-	float d = sqrt(a_Position.x*a_Position.x + a_Position.y*a_Position.y);
-	float sinTheta = sin(d*u_Theta);
-	float cosTheta = cos(d*u_Theta);
-	return vec2(a_Position.x*cosTheta - a_Position.y*sinTheta, a_Position.x*sinTheta + a_Position.y*cosTheta);
-}
-
 
 void main() 
 {
 	// PUT YOUR CODE HERE
 
+
 	if(u_Twist == 1) {
+	float x = a_Position.x;
+	float y = a_Position.y;
+	float t = sqrt(x*x + y*y) * u_Theta;
+		
+	gl_Position = u_Projection*vec4(x*cos(t) -y*sin(t),x*sin(t) + y*cos(t), 0 , 1);
 			
-			gl_Position =u_Projection*u_Modelview* vec4(rotTwist(a_Position),0,1);
 			
-	} else{
+	 }else{
 			gl_Position = u_Projection * u_Modelview * vec4(a_Position,0,1);
 	}
 	v_Color = vec4(a_Color,1.0);
 }
-
