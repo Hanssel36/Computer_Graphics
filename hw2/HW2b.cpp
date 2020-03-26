@@ -93,7 +93,7 @@ HW2b::resizeGL(int w, int h)
 		ymax = 1 / ar;
 	}
 	//set viewport to occupy full canvas
-	glViewport(0, 0, w/3, h/3);
+	glViewport(0, 0, w, h);
 
 	//initialize viewing coordinates for orthographic projection
 	m_projection.setToIdentity();
@@ -109,27 +109,24 @@ void
 HW2b::paintGL()
 {
 	// PUT YOUR CODE HERE
-	//clear canvas
+	// clear canvas with background color
 	glClear(GL_COLOR_BUFFER_BIT);
 
 
-	///////
-
-	
-
-	// use glsl program
-
+	// use glsl progam
 	glUseProgram(m_program[HW2B].programId());
 
-
-	//pass parameters to vertex shaqder
+	// pass the following parameters to vertex the shader:
+	// projection matrix, modelview matrix, and "reverse" flag
 	glUniformMatrix4fv(m_uniform[HW2B][MV], 1, GL_FALSE, m_modelview.constData());
 	glUniformMatrix4fv(m_uniform[HW2B][PROJ], 1, GL_FALSE, m_projection.constData());
-	glUniform1f(m_uniform[HW2B][THETA], m_theta);
+
+	
+	glUniform1i(m_uniform[HW2B][THETA], m_theta);
 	glUniform1i(m_uniform[HW2B][TWIST], m_twist);
 
-	//draw triangles
-	glDrawArrays(GL_TRIANGLES, 0, (GLsizei) m_numPoints);
+	// draw triangles
+	glDrawArrays(GL_TRIANGLES, 0, (GLsizei) m_numPoints);	
 
 
 }
@@ -275,6 +272,7 @@ HW2b::initShaders()
 void
 HW2b::initVertexBuffer()
 {
+	// set flag for creating buffers
 	// init geometry data
 	const vec2 vertices[] = {
 		vec2( 0.0f,   0.75f ),
@@ -282,21 +280,48 @@ HW2b::initVertexBuffer()
 		vec2(-0.65f, -0.375f)
 	};
 
+
+
+
+	//set flag for creating buffers
+	static bool flag = 1;
+
+
+	//verify valid vertex and color buffers
+	static GLuint vertexbuffer = -1;
+	static GLuint colorbuffer = -1;
+
+	if (flag) {
+		glGenBuffers(1, &vertexbuffer);
+		glGenBuffers(1, &colorbuffer);
+		flag = 0;
+	}
+
+	divideTriangle(vertices[0], vertices[1], vertices[2], m_subdivisions);
+
+	m_numPoints = (int)m_points.size();		// save number of vertices
+	////
 	// recursively subdivide triangle into triangular facets;
 	// store vertex positions and colors in m_points and m_colors, respectively
-	divideTriangle(vertices[0], vertices[1], vertices[2], m_subdivisions);
-	m_numPoints = (int) m_points.size();		// save number of vertices
 
+	////
 	// bind vertex buffer to the GPU and copy the vertices from CPU to GPU
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER,vertexbuffer);
 	glBufferData(GL_ARRAY_BUFFER, m_numPoints*sizeof(vec2), &m_points[0], GL_STATIC_DRAW);
 
-
+	glEnableVertexAttribArray(ATTRIB_VERTEX);
+	glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, false, 0, NULL);
+	
 	
 	// bind color buffer to the GPU and copy the colors from CPU to GPU
-	glBindBuffer(GL_ARRAY_BUFFER, m_colorBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
 	glBufferData(GL_ARRAY_BUFFER, m_numPoints*sizeof(vec3), &m_colors[0], GL_STATIC_DRAW);
 
+	glEnableVertexAttribArray(ATTRIB_COLOR);
+	glVertexAttribPointer(ATTRIB_COLOR, 3, GL_FLOAT, false, 0, NULL);
+	
+
+	
 	// clear vertex and color vectors because they have already been copied into GPU
 	m_points.clear();
 	m_colors.clear();
@@ -343,12 +368,12 @@ HW2b::triangle(vec2 v1, vec2 v2, vec2 v3)
 	m_points.push_back(v3);
 
 	// init color
-	float r = (float) rand() / RAND_MAX;
-	float g = (float) rand() / RAND_MAX;
-	float b = (float) rand() / RAND_MAX;
-	m_colors.push_back(vec3(r, g, b));
-	m_colors.push_back(vec3(r, g, b));
-	m_colors.push_back(vec3(r, g, b));
+	//float r = (float) rand() / RAND_MAX;
+	//float g = (float) rand() / RAND_MAX;
+	//float b = (float) rand() / RAND_MAX;
+	m_colors.push_back(vec3((float)rand() / RAND_MAX, (float)rand() / RAND_MAX, (float)rand() / RAND_MAX));
+	m_colors.push_back(vec3((float)rand() / RAND_MAX, (float)rand() / RAND_MAX, (float)rand() / RAND_MAX));
+	m_colors.push_back(vec3((float)rand() / RAND_MAX, (float)rand() / RAND_MAX, (float)rand() / RAND_MAX));
 }
 
 
